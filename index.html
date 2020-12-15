@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>微信</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="./lib/tailwind.css" rel="stylesheet">
+  <style>
+    html,body{
+      height: 100vh;
+      margin:0;
+      padding:0;
+    }
+    .header{
+      height: 50px;
+      line-height:50px;
+      background-color: #d8d8d8;
+      color: #000;
+      font-weight: bold;
+      padding: 0 10px;
+      justify-content: space-between;
+      display: flex;
+    }
+    .nav{
+      height: 50px;
+      line-height:50px;
+    }
+    li{
+      height: 80px;
+      line-height:80px;
+      padding:0 10px;
+      background: #fff;
+    }
+    .avatar{
+      width:50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      border-radius: 10px;
+      background: #ffeb3b;
+      display: inline-block;
+      margin: 10px;
+    }
+    /* slideIns */
+    .transition{
+      transition: all 0.2s;
+      overflow: hidden;
+    }
+    /* 从右边进入 */
+    .slideInRight{
+      transform: translateX(100%) translateY(-100%);
+    }
+    .slidingInRight{
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+<body id="body">
+	<div id="app" class="h-full">
+  </div>
+  <script src="./lib/jq.js"></script>
+  <script src="./page.js"></script>
+  <script src="./stack.js"></script>
+  <script src="./router.js"></script>
+	<script type="text/javascript">
+
+      let pages = [
+        {
+          id: 'layOutPage',
+          HTML: '<div class="layout flex flex-col h-full"><div id="view" class="flex-1"></div><div class="nav flex items-center"><span id="wechatBtn" class="flex-1 text-center" data-type="navBtn">微信</span><span id="friendListBtn" class="flex-1 text-center" data-type="navBtn">通讯录</span><span id="discoverBtn" class="flex-1 text-center" data-type="navBtn">发现</span><span id="myBtn" class="flex-1 text-center" data-type="navBtn">我</span></div></div>',
+          path: '/layOutPage',
+          childrenContainerId:'view',
+          children: [
+            {
+              id: 'wechatPage',
+              HTML: '<div class="bg-yellow-200 h-full"><div class="header"><span class="flex-1 flex justify-center">微信</span></div><div ><ul><li id="toChat"><span class="avatar">王</span>老王 点我和老王聊天</li></ul></div></div>',
+              path: '/wechatPage'
+            },
+            {
+              id: 'friendListPage', 
+              HTML: '<div class="bg-green-400 h-full"><div class="header"><span class="flex-1 flex justify-center">通讯录</span><div></div>',
+              path: '/friendListPage'
+            },
+            {
+              id: 'discoverPage', 
+              HTML: '<div class="bg-blue-400 h-full"><div class="header"><span class="flex-1 flex justify-center">发现</span></div><ul><li id="friendsCircleBtn">点我进入我自己的朋友圈</li></ul></div>',
+              path: '/discoverPage'
+            },
+            {
+              id: 'myPage',
+              HTML: '<div class="bg-indigo-700 h-full"><div class="header"><span class="flex-1 flex justify-center">我的</span></div></div>',
+              path: '/myPage'
+            }
+          ]
+        },
+        {
+          id: 'friendsCirclePage',
+          HTML: '<div class="bg-red-600 h-full"><div class="header"><span id="backBtn">返回</span></div>这是我的朋友圈</div>',
+          path: '/friendsCirclePage'
+        },
+        {
+          id: 'friendsCirclePageWang',
+          HTML: '<div class="bg-green-300 h-full"><div class="header"><span id="backBtn">返回</span></div>这是老王的朋友圈</div>',
+          path: '/friendsCirclePageWang'
+        },
+        {
+          id: 'chatPage',
+          HTML: '<div class="bg-red-300 h-full"><div class="header"><span id="chatBackBtn">返回</span><span>我和老王的聊天窗口</span><span></span></div><div><span id="avatarBtn" class="avatar">点我</span><span>你好啊</span></div></div>',
+          path: '/chatPage'
+        },
+        {
+          id: 'wangInfoPage',
+          HTML: '<div class="bg-yellow-200 h-full"><div class="header"><span id="wangInfoBackBtn">返回</span><span>老王的信息</span><span></span></div><div ><ul><li><span class="avatar">王</span>姓名：老王 微信号：9527</li></ul><ul><li id="toWangFriendCircleBtn"><span class="avatar">王</span>点我进入老王的朋友圈</li></ul></div></div>',
+          path: '/wangInfoPage'
+        }
+      ]
+
+      let router = new Router(pages, 'app')
+
+			$('#body').click(function(e){
+        switch (e.target.id){
+          case 'wechatBtn':
+            router.navigateTo('wechatPage')
+            break
+          case 'friendListBtn':
+            router.navigateTo('friendListPage')
+            break
+          case 'discoverBtn':
+            router.navigateTo('discoverPage')
+            break
+          case 'myBtn':
+            router.navigateTo('myPage')
+            break
+          case 'backBtn':
+            router.goBack()
+            break
+          case 'chatBackBtn':
+            router.goBack()
+            break
+          case 'wangInfoBackBtn':
+            router.goBack()
+            break
+          case 'friendsCircleBtn':
+            router.navigateTo('friendsCirclePage','slideInRight')
+            break
+          case 'avatarBtn':
+            router.navigateTo('wangInfoPage','slideInRight')
+            break
+          case 'toWangFriendCircleBtn':
+            router.navigateTo('friendsCirclePageWang','slideInRight')
+            break
+          case 'toChat':
+            router.navigateTo('chatPage','slideInRight')
+            break
+        }
+      })
+      
+      // 默认显示首页
+      router.navigateTo('layOutPage')
+      router.navigateTo('wechatPage')
+
+	</script>
+</body>
+</html>
