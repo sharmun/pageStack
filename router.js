@@ -7,7 +7,7 @@ class Router{
     this.pageStack = new PageStack()
   }
   goTo(path){
-    this.pageStack.goTo(this.config[path].component)
+    this.pageStack.goTo(new Component(this.config[path].component))
     
   }
   goBack(){
