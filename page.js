@@ -7,20 +7,32 @@ class Component {
         this.pageDom = $(`<div class="page ${this.animate? 'slideInRight transition':''}" id="${this.id}" style="z-index:${this.zindex}"></div>`)
         this.componentWillMount = options.componentWillMount
         this.componentDidMount = options.componentDidMount
-        console.log(this)
+        this.state = options.state
         this.start()
     }
 
     start() {
         this.componentWillMount && this.componentWillMount()
-        this.mount()
+        this.render()
             // 页面切换动画效果
         this.animate && setTimeout(() => { this.pageDom.removeClass('slideInRight') }, 0)
         this.componentDidMount && this.componentDidMount()
     }
 
-    mount() {
-        this.pageDom.append($(this.HTML))
+    render(reRender) {
+        if (reRender) {
+            this.reRender()
+        } else {
+            this.pageDom.append($(this.fillHTMLData()))
+            $('#app').append(this.pageDom)
+        }
+
+    }
+
+    reRender() {
+        this.pageDom.remove()
+        this.pageDom = $(`<div class="page ${this.animate? 'slideInRight transition':''}" id="${this.id}" style="z-index:${this.zindex}"></div>`)
+        this.pageDom.append($(this.fillHTMLData()))
         $('#app').append(this.pageDom)
     }
 
@@ -34,12 +46,37 @@ class Component {
 
     destroy() {
         return new Promise((resolve, reject) => {
-            document.getElementById(this.id).addEventListener('transitionend', () => {
+            if (this.animate) {
+                document.getElementById(this.id).addEventListener('transitionend', () => {
+                    this.pageDom.remove()
+                    resolve()
+                })
+                this.pageDom.addClass('slideInRight')
+            } else {
                 this.pageDom.remove()
                 resolve()
-            })
-            this.animate && this.pageDom.addClass('slideInRight')
+            }
+
         })
+    }
+
+    fillHTMLData() {
+        const re = /\{\{(.+?)\}\}/g
+        let arr = this.HTML.match(re)
+        if (arr && arr.length > 0) {
+            let htmls = this.HTML.split(arr[0])
+            let key = arr[0].replace('{{', '').replace('}}', '')
+            let newHTML = htmls[0] + this.state[key] + htmls[1]
+            return newHTML
+        } else {
+            return this.HTML
+        }
+
+    }
+
+    setState(newState) {
+        this.state = newState
+        this.render(true)
     }
 
 }
@@ -49,12 +86,19 @@ class ChatPage extends Component {
     constructor(options) {
         options.id = 'ChatPage'
         options.getHTML = function() {
-            return '<div class="bg-red-300 h-full"><div class="header"><span event="goBack" id="back">返回</span><span>我和老王的聊天窗口</span><span></span></div><div><span class="avatar" event="gotoWInfo" id="gotoWInfo">点我</span><span>你好啊</span></div></div>'
+            return '<div class="bg-red-300 h-full"><div class="header"><span event="goBack" id="back">返回</span><span>我和{{name}}的聊天窗口</span><span></span></div><div><span class="avatar" event="gotoWInfo" id="gotoWInfo">点我</span><span>你好啊</span></div></div>'
         }
+        options.state = { name: '老王' }
         options.componentDidMount = function() {
 
             this.bindEvents()
+
+            setTimeout(() => {
+                this.setState({ name: '老李' })
+            }, 3000)
         }
+
+
 
         super(options)
     }
