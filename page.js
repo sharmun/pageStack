@@ -35,8 +35,6 @@ class Component {
     destroy() {
         return new Promise((resolve, reject) => {
             document.getElementById(this.id).addEventListener('transitionend', () => {
-                // ????怎么没执行？
-                alert(1)
                 this.pageDom.remove()
                 resolve()
             })
