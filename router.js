@@ -1,16 +1,18 @@
-class Router{
-  constructor(config){
-    this.config = {}
-    config.map(item=>{
-      this.config[item.path] = item
-    })
-    this.pageStack = new PageStack()
-  }
-  goTo(path){
-    this.pageStack.goTo(new Component(this.config[path].component))
-    
-  }
-  goBack(){
-    this.pageStack.goBack()
-  }
+class Router {
+    constructor(config) {
+        this.config = config
+        this.pageStack = new PageStack()
+    }
+    goTo(path) {
+        if (this.config[path] && this.config[path].componnet) {
+            let page = new this.config[path].componnet({ zindex: this.pageStack.getLength() })
+            this.pageStack.goTo(page)
+        } else {
+            alert(404)
+        }
+
+    }
+    goBack() {
+        this.pageStack.goBack()
+    }
 }

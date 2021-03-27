@@ -2,75 +2,48 @@
 <html>
 
 <head>
-  <title>微信</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link href="./lib/tailwind.css" rel="stylesheet">
-  <link href="./css/main.css" rel="stylesheet">
+    <title>微信</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="./lib/tailwind.css" rel="stylesheet">
+    <link href="./css/main.css" rel="stylesheet">
 </head>
 
 <body id="body">
-  <div id="app" class="h-full">
-  </div>
-  <script src="./lib/jq.js"></script>
-  <script src="./page.js"></script>
-  <script src="./utils.js"></script>
-  <script src="./pageStack.js"></script>
-  <script src="./router.js"></script>
-  <script type="text/javascript">
+    <div id="app" class="h-full">
+    </div>
+    <script src="./lib/jq.js"></script>
+    <script src="./page.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./pageStack.js"></script>
+    <script src="./router.js"></script>
+    <script type="text/javascript">
+        let config = {
+            '/chatPage': {
+                componnet: ChatPage,
+                // animation: true
+            },
+            '/wangInfoPage': {
+                componnet: WangInfoPage,
+                // animation: true
+            },
+            '/friendsCirclePage': {
+                componnet: FriendsCirclePage,
+                // animation: true
+            }
+        }
 
-    let chatPageComponent = {
-      id: 'a',
-      HTML: '<div class="bg-red-300 h-full"><div class="header"><span event="goBack">返回</span><span>我和老王的聊天窗口</span><span></span></div><div><span class="avatar" event="gotoWInfo">点我</span><span>你好啊</span></div></div>'
-    }
+        let router = new Router(config)
 
-    let wangInfoPageComponent = {
-      id: 'b',
-      HTML: `<div class="bg-yellow-200 h-full">
-          <div class="header"><span event="goBack">返回</span><span>老王的信息</span><span></span></div><div >
-            <ul><li><span class="avatar">王</span>姓名：老王 微信号：9527</li></ul>
-            <ul event="gotoWFC"><li id="toWangFriendCircleBtn"><span class="avatar" >王</span>点我进入老王的朋友圈</li></ul>
-          </div>
-          </div>`
-    }
+        // 显示聊天窗口
+        router.goTo('/chatPage')
 
-    let friendsCirclePageWangComponent = {
-      id: 'c',
-      HTML: '<div class="bg-green-300 h-full"><div class="header"><span event="goBack">返回</span></div>这是老王的朋友圈</div>'
-    }
 
-    let config = [
-      {
-        id: 'friendsCirclePageWang',
-        component: friendsCirclePageWangComponent,
-        path: '/friendsCirclePageWang'
-      },
-      {
-        id: 'chatPage',
-        component: chatPageComponent,
-        path: '/chatPage'
-      },
-      {
-        id: 'wangInfoPage',
-        component: wangInfoPageComponent,
-        path: '/wangInfoPage'
-      }
-    ]
 
-    let router = new Router(config)
-
-    // 显示聊天窗口
-    router.goTo('/chatPage')
-
-    function goBack() {
-      router.goBack()
-    }
-    function gotoWInfo() {
-      router.goTo('/wangInfoPage')
-    }
-    function gotoWFC() {
-      router.goTo('/friendsCirclePageWang')
-    }
-  </script>
+        // 1、路由改变 如果是back调用当前页面unmount
+        // 2、new目标页面Component并push进入pagestack
+        // 3、开始页面的生命周期 start
+        // 4、路由改变 loop
+    </script>
 </body>
 
 </html>
